@@ -1,0 +1,26 @@
+version: '3'
+
+networks:
+  grid-network:
+    driver: bridge
+
+services:
+  postgres:
+    image: 'postgres:15'
+    environment:
+      - 'POSTGRES_DB=postgres'
+      - 'POSTGRES_PASSWORD=grid'
+      - 'POSTGRES_USER=grid'
+    ports:
+      - "5432:5432"
+    container_name: "grid-app-postgres-15"
+    networks:
+      - grid-network
+
+#  grid-app:
+#    build: .
+#    ports:
+#      - "9090:9090"
+#    container_name: "grid-app-0.0.1"
+#    networks:
+#      - grid-network
