@@ -14,19 +14,19 @@ interface CellRepository : JpaRepository<Cell, Long> {
 
     fun findCellById(id: Long): CellDto?
 
-    fun findAllByRowIndex(rowIndex: Int): List<Cell>
+    fun findAllByGridIdAndRowIndexOrderByColumnIndex(gridId: Long, rowIndex: Int): List<Cell>
 
-    fun findAllByColumnIndex(columnIndex: Int): List<Cell>
-
-//    @Modifying
-//    @Transactional
-//    fun updateAllByRowIndex(rowIndex: Int)
-//
+    fun findAllByGridIdAndColumnIndexOrderByRowIndex(gridId: Long, columnIndex: Int): List<Cell>
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE cell SET value = value + 1, time_updated = NOW() WHERE column_index = :columnIndex", nativeQuery = true)
-    fun updateAllByColumnIndex(@Param("columnIndex") columnIndex: Int): Int
+    @Query(value = "UPDATE cell SET value = value + 1, time_updated = NOW() WHERE row_index = :row", nativeQuery = true)
+    fun updateAllByRowIndex(@Param("row") columnIndex: Int): Int
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE cell SET value = value + 1, time_updated = NOW() WHERE column_index = :column", nativeQuery = true)
+    fun updateAllByColumnIndex(@Param("column") columnIndex: Int): Int
 
     @Modifying
     @Transactional

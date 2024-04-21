@@ -1,4 +1,6 @@
-package com.example.todoapp.exception
+package com.example.grid.exception
+
+import org.example.grid.exception.BaseException
 
 class ServiceException(message: String) : BaseException(message) {
 

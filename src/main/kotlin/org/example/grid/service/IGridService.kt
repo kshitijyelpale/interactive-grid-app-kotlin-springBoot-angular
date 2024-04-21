@@ -6,6 +6,7 @@ import org.example.grid.dao.dto.GridDto
 interface IGridService {
 
     fun createGrid(gridDto: GridDto): GridDto
+    fun findAllGrids(): List<GridDto>
     fun getGridState(gridId: Long): GridDto
     fun createGridCell(cellDto: CellDto): List<CellDto>
     fun getGridCell(cellId: Long): CellDto

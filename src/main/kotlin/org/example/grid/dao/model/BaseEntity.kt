@@ -16,7 +16,4 @@ abstract class BaseEntity {
     @UpdateTimestamp
     @Column(nullable = true)
     val timeUpdated: Timestamp? = null
-
-    @Version
-    val version: Long = 0
 }

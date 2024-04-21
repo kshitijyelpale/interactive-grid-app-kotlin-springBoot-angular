@@ -23,4 +23,4 @@ server:
 
 logging:
   level:
-    com.example: TRACE
+    com.example: debug

@@ -1,0 +1,29 @@
+// Define basic variables for consistency and easy maintenance
+$border-color: #e0e0e0;
+$highlight-background-color: yellow;
+
+.table-style {
+  width: 100%;
+  border-collapse: collapse;
+
+  .mat-mdc-cell {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+    border-right: 1px solid $border-color;
+    padding: 8px;  // Adjust padding to ensure content fits well
+
+  &:last-child {
+    border-right: none;
+  }
+  }
+
+  .mat-mdc-row, .mat-mdc-header-row {
+    border-bottom: 1px solid $border-color;
+  }
+
+  .highlighted {
+    background-color: $highlight-background-color;
+  }
+}

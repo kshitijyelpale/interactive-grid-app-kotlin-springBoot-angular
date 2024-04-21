@@ -28,6 +28,7 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion")
+    implementation("org.springframework.boot:spring-boot-starter-data-rest:$springBootVersion")
     implementation("org.springframework.boot:spring-boot-starter-hateoas:$springBootVersion")
     implementation("org.springframework.boot:spring-boot-starter-validation:$springBootVersion")
     implementation("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
@@ -80,7 +81,7 @@ tasks.register<Copy>("copyWebApp") {
 }
 
 tasks.withType<KotlinCompile> {
-//    dependsOn("copyWebApp")
+    dependsOn("copyWebApp")
     kotlinOptions {
         freeCompilerArgs += "-Xjsr305=strict"
         jvmTarget = "21"

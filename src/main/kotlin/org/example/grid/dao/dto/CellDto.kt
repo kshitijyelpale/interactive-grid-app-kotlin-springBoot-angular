@@ -1,6 +1,6 @@
 package org.example.grid.dao.dto
 
-import jakarta.validation.constraints.PositiveOrZero
+import jakarta.validation.constraints.Min
 import org.example.grid.dao.model.ValueEffect
 import java.io.Serializable
 
@@ -12,13 +12,13 @@ data class CellDto(
 
     val gridId: Long,
 
-    @field:PositiveOrZero
+    @field:Min(value = 1, message = "row index must be grater than 1")
     val rowIndex: Int,
 
-    @field:PositiveOrZero val
-    columnIndex: Int,
+    @field:Min(value = 1, message = "column index must be grater than 1")
+    val columnIndex: Int,
 
     val value: Long? = null,
 
-    val effect: ValueEffect? = null
+    var effect: ValueEffect? = null
 ) : Serializable

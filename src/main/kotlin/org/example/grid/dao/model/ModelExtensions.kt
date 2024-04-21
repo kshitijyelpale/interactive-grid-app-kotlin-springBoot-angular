@@ -2,6 +2,7 @@ import org.example.grid.dao.dto.CellDto
 import org.example.grid.dao.dto.GridDto
 import org.example.grid.dao.model.Cell
 import org.example.grid.dao.model.Grid
+import org.example.grid.dao.model.ValueEffect
 
 fun Grid.toDto() = GridDto(
     id = id,
@@ -15,18 +16,19 @@ fun GridDto.toModel() = Grid(
     numberOfColumns = numberOfColumns
 )
 
-fun Cell.toDto() = CellDto(
+fun Cell.toDto(customEffect: ValueEffect? = null) = CellDto(
     id = id,
     gridId = gridId,
     rowIndex = rowIndex,
     columnIndex = columnIndex,
     value = value,
-    effect = effect
+    effect = customEffect ?: effect
 )
 
-fun CellDto.toModel() = Cell(
+fun CellDto.toModel(customEffect: ValueEffect? = null) = Cell(
     gridId = gridId,
     rowIndex = rowIndex,
     columnIndex = columnIndex,
-    value = value?.let { it + 1 } ?: 1
+    value = value?.let { it + 1 } ?: 1,
+    effect = customEffect
 )

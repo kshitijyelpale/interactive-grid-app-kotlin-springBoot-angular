@@ -1,4 +1,4 @@
-package com.example.todoapp.exception
+package org.example.grid.exception
 
 import java.lang.RuntimeException
 

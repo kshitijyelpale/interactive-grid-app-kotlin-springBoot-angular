@@ -1,0 +1,27 @@
+<table mat-table [dataSource]="gridData" class="mat-elevation-z8">
+  <!-- Row Header Column Definition -->
+  <ng-container matColumnDef="rowHeader">
+    <th mat-header-cell *matHeaderCellDef>Row #</th>
+    <td mat-cell *matCellDef="let row; let rowIndex = index">{{ rowIndex + 1 }}</td>
+  </ng-container>
+
+  <!-- Column Definitions -->
+  <ng-container *ngFor="let col of columns; let colIndex = index" [matColumnDef]="col">
+    <th mat-header-cell *matHeaderCellDef>{{ col }}</th>
+    <td mat-cell *matCellDef="let row; let rowIndex = index"
+        [class.highlighted]="row[colIndex].highlighted"
+        [ngStyle]="{'background-color': row[colIndex].effect || 'white'}"
+        (click)="onCellClick(row, rowIndex, colIndex)"
+        [style.width]="cellWidth" [style.height]="cellHeight">
+      {{ row[colIndex].value }}
+    </td>
+  </ng-container>
+
+  <!-- Header and Row Setup -->
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns; let rowIndex = index"></tr>
+</table>
+
+<div class="spinner-container" *ngIf="loading">
+  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+</div>

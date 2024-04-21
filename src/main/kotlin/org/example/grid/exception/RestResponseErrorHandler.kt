@@ -1,4 +1,4 @@
-package com.example.todoapp.exception
+package com.example.grid.exception
 
 import jakarta.validation.ConstraintViolationException
 import org.springframework.http.HttpHeaders
