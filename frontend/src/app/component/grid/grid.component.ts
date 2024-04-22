@@ -109,8 +109,8 @@ export class GridComponent implements OnInit {
       // Assuming rowIndex and columnIndex are 1-based indexes from the backend
       if (this.gridData[cell.rowIndex - 1] && this.gridData[cell.rowIndex - 1][cell.columnIndex - 1]) {
         this.gridData[cell.rowIndex - 1][cell.columnIndex - 1] = cell;
-        this.scheduleFiboCellEffect(cell)
-        this.scheduleUpdateEffect(cell);
+        const fiboCell = this.scheduleFiboCellEffect(cell)
+        if (!fiboCell) this.scheduleUpdateEffect(cell);
       }
     });
   }
@@ -131,6 +131,8 @@ export class GridComponent implements OnInit {
             this.gridData[cell.rowIndex - 1][cell.columnIndex - 1] = { ...cell, id: 0, value: '' };
           });
       }, 5000);
+      return true;
     }
+    return false;
   }
 }

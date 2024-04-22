@@ -112,17 +112,18 @@ internal class GridService(
 
             val saveAll = cellRepository.saveAll(missingCells)
             val cellDtos = saveAll.map { it.toDto() }.toMutableSet()
+            val fiboCheckedCell = mutableSetOf<CellDto>()
+            fiboCheckedCell.addAll(processCells(grid.id, saveAll, numberOfRows = grid.numberOfRows))
+            fiboCheckedCell.addAll(processCells(grid.id, saveAll, numberOfColumns = grid.numberOfColumns))
+            val ids = fiboCheckedCell.map { it.id }.toSet()
 
-            cellDtos.addAll(processCells(grid.id, numberOfRows = grid.numberOfRows))
-            cellDtos.addAll(processCells(grid.id, numberOfColumns = grid.numberOfColumns))
-
-            return cellDtos
+            return cellDtos.filter { it.id !in ids }.toSet() + fiboCheckedCell
         } catch (e: Exception) {
-            throw ServiceException("Error saving rows and columns for a requested cell: ${cell} with error: ${e.message}")
+            throw ServiceException("Error saving rows and columns for a requested cell: ${cell.id} with error: ${e.message}")
         }
     }
 
-    private fun createOrUpdateColumnsCells(grid: Grid, cell: Cell, ): MutableList<Cell>  {
+    private fun createOrUpdateColumnsCells(grid: Grid, cell: Cell): MutableList<Cell>  {
         val existingColumnCells = cellRepository.findAllByGridIdAndRowIndexOrderByColumnIndex(grid.id, cell.rowIndex)
         val maxColumns = grid.numberOfColumns
         val existingColumns = existingColumnCells.map { it.columnIndex }.toSet()
@@ -164,7 +165,7 @@ internal class GridService(
         return missingCells
     }
 
-    fun processCells(gridId: Long, numberOfRows: Int? = null, numberOfColumns: Int? = null): Set<CellDto> {
+    fun processCells(gridId: Long, savedCells: List<Cell>, numberOfRows: Int? = null, numberOfColumns: Int? = null): Set<CellDto> {
         if (numberOfRows == null && numberOfColumns == null) {
             return emptySet()
         }
@@ -184,10 +185,10 @@ internal class GridService(
                     transactionTemplate.execute {
                         updatedCellDtos.addAll(
                             if (numberOfRows != null) {
-                                checkFibonacciSequenceForRow(gridId, i)
+                                checkFibonacciSequenceForRow(gridId, i, savedCells)
                             }
                             else{
-                                checkFibonacciSequenceForColumn(gridId, i)
+                                checkFibonacciSequenceForColumn(gridId, i, savedCells)
                             }
                         )
                     }
@@ -203,21 +204,27 @@ internal class GridService(
         return updatedCellDtos
     }
 
-    fun checkFibonacciSequenceForRow(gridId: Long, rowIndex: Int): Set<CellDto> {
+    fun checkFibonacciSequenceForRow(gridId: Long, rowIndex: Int, savedCells: List<Cell>): Set<CellDto> {
         logger.info { "Check for Fibonacci Sequence for Grid $gridId and rowIndex $rowIndex" }
         val cells = cellRepository.findAllByGridIdAndRowIndexOrderByColumnIndex(gridId, rowIndex)
-        val map = cells.associate { it.id to it.value }
-        val fiboIds = checkFibonacciSequence(map)
-        return cells.asSequence().filter { it.id in fiboIds }.map { it.toDto(customEffect = ValueEffect.GREEN) }
-            .toSet()
+        return processCellAndCheckFibo(cells, savedCells)
     }
 
-    fun checkFibonacciSequenceForColumn(gridId: Long, columnIndex: Int): Set<CellDto> {
+    fun checkFibonacciSequenceForColumn(gridId: Long, columnIndex: Int, savedCells: List<Cell>): Set<CellDto> {
         logger.info { "Check for Fibonacci Sequence for Grid $gridId and columnIndex $columnIndex" }
         val cells = cellRepository.findAllByGridIdAndColumnIndexOrderByRowIndex(gridId, columnIndex)
-        val map = cells.associate { it.id to it.value }
+        return processCellAndCheckFibo(cells, savedCells)
+    }
+
+    private fun processCellAndCheckFibo(
+        cells: List<Cell>,
+        savedCells: List<Cell>
+    ): Set<CellDto> {
+        var cells1 = cells
+        cells1 = (cells1.associateBy { it.id } + savedCells.associateBy { it.id }).values.toList()
+        val map = cells1.associate { it.id to it.value }
         val fiboIds = checkFibonacciSequence(map)
-        return cells.asSequence().filter { it.id in fiboIds }.map { it.toDto(customEffect = ValueEffect.GREEN) }
+        return cells1.asSequence().filter { it.id in fiboIds }.map { it.toDto(customEffect = ValueEffect.GREEN) }
             .toSet()
     }
 
@@ -235,7 +242,7 @@ internal class GridService(
             if (values[i] == values[i - 1] + values[i - 2]) {
                 fiboCount += 1
                 if (fiboCount >= FIBONACCI_LENGTH) {
-                    resultIds.addAll(ids.subList(i - FIBONACCI_LENGTH, i + 1))
+                    resultIds.addAll(ids.subList(i - (FIBONACCI_LENGTH - 1), i + 1))
                 }
             } else {
                 // Reset count if the sequence breaks
