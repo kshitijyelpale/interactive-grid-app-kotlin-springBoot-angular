@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import {Observable} from "rxjs";
+import {Component, OnInit} from '@angular/core';
+import {Observable, take} from "rxjs";
 import {Grid} from "../../model";
 import {GridService} from "../../service/grid.service";
 
@@ -8,21 +8,27 @@ import {GridService} from "../../service/grid.service";
   templateUrl: './grids.component.html',
   styleUrl: './grids.component.scss'
 })
-export class GridsComponent {
+export class GridsComponent implements OnInit{
   grids$: Observable<Grid[]> | undefined
 
   constructor(private readonly gridService: GridService) {
-    this.grids$ = this.gridService.getAllGrid()
+  }
+
+  ngOnInit() {
+    this.loadGridData();
   }
 
   initialize() {
-    // const grid: Grid = {
-    //   numberOfRows: rows,
-    //   numberOfColumns: columns
-    // }
-    // this.gridService.createGrid(grid).pipe(take(1)).subscribe((grid: Grid) => {
-    //   this.numberOfRows = grid.numberOfRows;
-    //   this.numberOfColumns = grid.numberOfColumns;
-    // });
+    const grid: Grid = {
+      numberOfRows: 50,
+      numberOfColumns: 50
+    }
+    this.gridService.createGrid(grid).pipe(take(1)).subscribe(() => {
+      this.loadGridData();
+    });
+  }
+
+  loadGridData() {
+    this.grids$ = this.gridService.getAllGrid();
   }
 }
