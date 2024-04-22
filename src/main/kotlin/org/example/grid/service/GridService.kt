@@ -23,7 +23,7 @@ import kotlin.concurrent.withLock
 
 @Service
 @Transactional
-internal class GridService(
+class GridService(
     private val gridRepository: GridRepository,
     private val cellRepository: CellRepository,
     private val transactionTemplate: TransactionTemplate
