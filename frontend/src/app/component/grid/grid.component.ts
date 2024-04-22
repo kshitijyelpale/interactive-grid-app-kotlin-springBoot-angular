@@ -24,7 +24,6 @@ export class GridComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly gridService: GridService
   ) {
-    console.log('GridComponent');
   }
 
   ngOnInit() {
@@ -40,9 +39,8 @@ export class GridComponent implements OnInit {
   adjustCellSize() {
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
-    console.log(screenWidth, screenHeight);
     this.cellWidth = (screenWidth / 50) + 'px';
-    this.cellHeight = (screenWidth / 50) + 'px';
+    this.cellHeight = (screenHeight / 50) + 'px';
   }
 
   initializeGrid() {
@@ -82,7 +80,6 @@ export class GridComponent implements OnInit {
 
   onCellClick(row: Cell[], gridRowIndex: number, gridColumnIndex: number) {
     this.loading = true;
-    // console.log('Cell clicked:', gridRowIndex + 1, gridColumnIndex + 1, row[gridColumnIndex].value);
     if (row[gridColumnIndex].id) {
       this.gridService.updateCellState(row[gridColumnIndex].id)
         .pipe(
