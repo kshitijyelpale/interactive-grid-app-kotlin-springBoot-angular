@@ -16,7 +16,13 @@ interface CellRepository : JpaRepository<Cell, Long> {
 
     fun findAllByGridIdAndRowIndexOrderByColumnIndex(gridId: Long, rowIndex: Int): List<Cell>
 
+    fun findAllByGridIdAndRowIndexOrderByColumnIndexDesc(gridId: Long, rowIndex: Int): List<Cell>
+
     fun findAllByGridIdAndColumnIndexOrderByRowIndex(gridId: Long, columnIndex: Int): List<Cell>
+
+    fun findAllByGridIdAndColumnIndexOrderByRowIndexDesc(gridId: Long, columnIndex: Int): List<Cell>
+
+    fun findAllByGridId(gridId: Long,): List<Cell>
 
     @Modifying
     @Transactional

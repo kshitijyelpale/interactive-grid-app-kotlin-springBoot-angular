@@ -42,7 +42,6 @@ class GridController(private val gridService: IGridService) {
     @GetMapping("/cell/{id}")
     fun getCellState(@PathVariable(name = "id") cellId: Long) = ResponseEntity.ok(gridService.getGridCell(cellId))
 
-
     @PutMapping("/cell/{id}")
     fun updateCell(@PathVariable(name = "id") cellId: Long) = ResponseEntity.ok(gridService.updateGridCell(cellId))
 

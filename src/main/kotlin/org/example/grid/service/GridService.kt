@@ -117,6 +117,14 @@ class GridService(
             fiboCheckedCell.addAll(processCells(grid.id, saveAll, numberOfColumns = grid.numberOfColumns))
             val ids = fiboCheckedCell.map { it.id }.toSet()
 
+            val allData = cellRepository.findAllByGridId(grid.id)
+
+            val mainDiagonalCells = (1 .. grid.numberOfRows).flatMap { i ->
+                allData.filter { it.rowIndex == i && it.columnIndex == i }
+            }
+
+            fiboCheckedCell.addAll(processCellAndCheckFibo(mainDiagonalCells, savedCells = saveAll))
+
             return cellDtos.filter { it.id !in ids }.toSet() + fiboCheckedCell
         } catch (e: Exception) {
             throw ServiceException("Error saving rows and columns for a requested cell: ${cell.id} with error: ${e.message}")
@@ -207,13 +215,19 @@ class GridService(
     fun checkFibonacciSequenceForRow(gridId: Long, rowIndex: Int, savedCells: List<Cell>): Set<CellDto> {
         logger.info { "Check for Fibonacci Sequence for Grid $gridId and rowIndex $rowIndex" }
         val cells = cellRepository.findAllByGridIdAndRowIndexOrderByColumnIndex(gridId, rowIndex)
-        return processCellAndCheckFibo(cells, savedCells)
+        val cellsInBackward = cellRepository.findAllByGridIdAndRowIndexOrderByColumnIndexDesc(gridId, rowIndex)
+        val forwardCheckedFiboCells = processCellAndCheckFibo(cells, savedCells)
+        val backwardCheckedFiboCells = processCellAndCheckFibo(cellsInBackward, savedCells)
+        return forwardCheckedFiboCells + backwardCheckedFiboCells
     }
 
     fun checkFibonacciSequenceForColumn(gridId: Long, columnIndex: Int, savedCells: List<Cell>): Set<CellDto> {
         logger.info { "Check for Fibonacci Sequence for Grid $gridId and columnIndex $columnIndex" }
         val cells = cellRepository.findAllByGridIdAndColumnIndexOrderByRowIndex(gridId, columnIndex)
-        return processCellAndCheckFibo(cells, savedCells)
+        val cellsInBackward = cellRepository.findAllByGridIdAndColumnIndexOrderByRowIndexDesc(gridId, columnIndex)
+        val forwardCheckedFiboCells = processCellAndCheckFibo(cells, savedCells)
+        val backwardCheckedFiboCells = processCellAndCheckFibo(cellsInBackward, savedCells)
+        return forwardCheckedFiboCells + backwardCheckedFiboCells
     }
 
     private fun processCellAndCheckFibo(

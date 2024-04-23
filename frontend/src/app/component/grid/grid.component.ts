@@ -19,6 +19,7 @@ export class GridComponent implements OnInit {
   numberOfColumns: number = 0;
   gridId = 0;
   loading = false;
+  cellTimeouts: { [key: number]: number} = {};
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -103,6 +104,11 @@ export class GridComponent implements OnInit {
 
   private updateCells(data: Cell[]) {
     data.forEach(cell => {
+      if (this.cellTimeouts[cell.id]) {
+        clearTimeout(this.cellTimeouts[cell.id]);
+        delete this.cellTimeouts[cell.id];
+      }
+
       // Assuming rowIndex and columnIndex are 1-based indexes from the backend
       if (this.gridData[cell.rowIndex - 1] && this.gridData[cell.rowIndex - 1][cell.columnIndex - 1]) {
         this.gridData[cell.rowIndex - 1][cell.columnIndex - 1] = cell;
@@ -113,14 +119,14 @@ export class GridComponent implements OnInit {
   }
 
   private scheduleUpdateEffect(cell: Cell) {
-    setTimeout(() => {
+    this.cellTimeouts[cell.id] = setTimeout(() => {
       this.gridData[cell.rowIndex - 1][cell.columnIndex - 1].effect = '';
     }, 2000);
   }
 
   private scheduleFiboCellEffect(cell: Cell) {
     if (cell.effect === 'GREEN') {
-      setTimeout(() => {
+      this.cellTimeouts[cell.id] = setTimeout(() => {
         this.gridData[cell.rowIndex - 1][cell.columnIndex - 1].effect = '';
         this.gridService.deleteCellState(cell.id)
           .pipe(take(1))
