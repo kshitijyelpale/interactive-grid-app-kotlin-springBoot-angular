@@ -40,3 +40,12 @@ A secondary trait of the interactive grid is to identify the Fibonacci sequence.
 - Application should be run through docker-compose
 - API documentation (OpenAPI Specification)
 - Improve the styling of UI pages
+
+### Approaches to manage Grids' data
+- Batch processing with the extension of existing threading logic to reduce number of threads and database calls
+- Load complete data in the memory at the application startup like caching, then perform the operations.
+  The `delayed write` can be used to keep the consistency and data integrity. So for example if the cells are created or updated
+  then mark a flag as dirty and then scheduler checks for the changed cell and persist.
+  - Challenges here to manage the memory because by loading all the grids' data might overkill the memory
+  - Need to implement efficient algorithm which will load only those grid which are recently accessed or frequently accessed
+- Use direct a Redis database as it in memory cached database.
