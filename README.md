@@ -1,6 +1,6 @@
 ### :books: Your Challenge:
 
-Your task is to architect and develop an interactive application composed of a backend and frontend. The backend is to be either Java or Kotlin based, while the frontend should be built using Angular.
+A task is to architect and develop an interactive application composed of a backend and frontend. The backend is Kotlin based, while the frontend built using Angular.
 
 ### :dart: Core Features:
 
@@ -20,8 +20,6 @@ A secondary trait of the interactive grid is to identify the Fibonacci sequence.
 ---
 
 :point_up: *Please note that in this application the heavy lifting of identifying patterns and modifying the grid will typically occur on the backend. The frontend would primarily focus on dispatching the correct requests and effectively rendering the changing state of the grid.*
-
-:alarm_clock: We fully understand that many of our candidates have significant commitments and may not be able to dedicate extensive time to this coding challenge. If you find yourself constrained for time, please do not hesitate to prioritize those features and aspects of the application that best showcase your strengths, skills, and areas of expertise. In that case, feel free to list and explain potential enhancements.
 
 
 ### Solution: 
