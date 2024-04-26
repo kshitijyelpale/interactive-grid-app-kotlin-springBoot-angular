@@ -1,4 +1,4 @@
-### :books: Your Challenge:
+### :books: My Challenge:
 
 A task is to architect and develop an interactive application composed of a backend and frontend. The backend is Kotlin based, while the frontend built using Angular.
 
