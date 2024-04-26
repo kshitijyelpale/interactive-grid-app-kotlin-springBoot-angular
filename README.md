@@ -21,6 +21,7 @@ A secondary trait of the interactive grid is to identify the Fibonacci sequence.
 
 :point_up: *Please note that in this application the heavy lifting of identifying patterns and modifying the grid will typically occur on the backend. The frontend would primarily focus on dispatching the correct requests and effectively rendering the changing state of the grid.*
 
+---
 
 ### Solution: 
 - Backend implementation will be directly available in `src` directory and frontend is in `frontend` directory
@@ -29,7 +30,7 @@ A secondary trait of the interactive grid is to identify the Fibonacci sequence.
 - To run Angular frontend, go to frontend and execute `npm i` and `npm run start`
 
 ### Improvements
-- Write frontend unit tests and increase the coverage of backend tests (If I got time today, I will write more scenario based tests)
+- Write frontend unit tests and increase the coverage of backend tests
 - Optimise the threading for Fibonacci sequence detection in the grid
 - Improve logging
 - Toast messages can be displayed on UI when action is performed
@@ -39,7 +40,7 @@ A secondary trait of the interactive grid is to identify the Fibonacci sequence.
 - API documentation (OpenAPI Specification)
 - Improve the styling of UI pages
 
-### Approaches to manage Grids' data
+### My further approaches to manage Grids' data
 - Batch processing with the extension of existing threading logic to reduce number of threads and database calls
 - Load complete data in the memory at the application startup like caching, then perform the operations.
   The `delayed write` can be used to keep the consistency and data integrity. So for example if the cells are created or updated
