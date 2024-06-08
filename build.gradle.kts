@@ -13,6 +13,9 @@ plugins {
 }
 
 val springBootVersion = "3.2.5"
+val springSecurityVersion = "5.7.10"
+val testContainersVersion = "1.16.3"
+val postgresqlVersion = "42.5.4"
 
 group = "org.example"
 version = "0.0.1-SNAPSHOT"
@@ -25,6 +28,55 @@ repositories {
     mavenCentral()
     maven("https://repo.spring.io/milestone")
 }
+
+sourceSets {
+    create("integrationTest") {
+        resources.srcDirs(file("src/test-integration/resources"), file("src/main/resources"))
+        java.srcDir(file("src/test-integration/kotlin"))
+        compileClasspath += sourceSets.main.get().output
+        runtimeClasspath += sourceSets.main.get().output
+    }
+}
+
+val integrationTestImplementation: Configuration by configurations.getting {
+    extendsFrom(configurations.testImplementation.get())
+}
+
+val integrationTestRuntimeOnly: Configuration by configurations.getting {
+    extendsFrom(configurations.testRuntimeOnly.get())
+}
+
+tasks.register("createIntegrationTestDirs") {
+    doLast {
+        val dirs = listOf(
+            "src/test-integration/kotlin",
+            "src/test-integration/resources"
+        )
+        dirs.forEach { dir ->
+            val file = file(dir)
+            if (!file.exists()) {
+                file.mkdirs()
+                println("Created directory: $dir")
+            }
+        }
+    }
+}
+
+val integrationTest = task<Test>("integrationTest") {
+    description = "Runs integration tests."
+    group = "verification"
+    testClassesDirs = sourceSets["integrationTest"].output.classesDirs
+    classpath = sourceSets["integrationTest"].runtimeClasspath
+    shouldRunAfter("test")
+//    finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.check { dependsOn(integrationTest) }
+
+// Ensure directories are created before compiling integration tests
+//tasks.named("compileIntegrationTestKotlin").configure {
+//    dependsOn("createIntegrationTestDirs")
+//}
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion")
@@ -47,6 +99,12 @@ dependencies {
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
     testImplementation("io.mockk:mockk:1.12.0")
+    integrationTestImplementation("com.ninja-squad:springmockk:3.1.2")
+    integrationTestImplementation("org.springframework.security:spring-security-test:$springSecurityVersion")
+    integrationTestImplementation("org.testcontainers:junit-jupiter:$testContainersVersion")
+    integrationTestImplementation("org.testcontainers:postgresql:$testContainersVersion")
+    integrationTestImplementation("org.testcontainers:testcontainers-bom:$testContainersVersion")
+    integrationTestImplementation("org.postgresql:postgresql:$postgresqlVersion")
 }
 
 node {
